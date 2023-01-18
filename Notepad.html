@@ -10,10 +10,70 @@
 <meta content="Wisdak" name="author">
 <meta content="Tup Code" name="copyright">
 <meta content="Tup Code - Online Notepad is a fast, clean and easy-to-use notepad online!" name="description">
-<meta content="Tup Code, Tup Code online notepad, online notepad, notepad online, notepad++, note online, ghi chú online, viết ghi chú online, trang viết ghi chú online, viết code online, lưu code online, lưu ghi chú online, tạo ghi chú online, sổ tay online, sổ tay trực tuyến, ..." name="keywords">
+<meta content="Tup Code, Tup Code online notepad, online notepad, notepad online, notepad++, ..." name="keywords">
 <meta content="Tup Code - Online Notepad" property="og:image:alt">
 <meta content="https://notepad.code.pro.vn/thumbnail.jpg" property="og:image">
-<link rel="stylesheet" href="https://notepad.code.pro.vn/styles.css">
+<!--<link rel="stylesheet" href="https://notepad.code.pro.vn/styles.css">-->
+ <style> @import url('https://cdn.jsdelivr.net/npm/segoe-fonts@1.0.1/segoe-fonts.min.css');
+
+body {
+    margin: 0;
+    background: #ebeef1;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    bottom: 20px;
+    left: 20px;
+}
+
+#content {
+    font-family: inherit;
+    font-size: 20px;
+    color: #0E1830;
+    margin: 0;
+    padding: 20px;
+    overflow-y: auto;
+    resize: none;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    box-sizing: border-box;
+    border: 1px #ddd solid;
+    border-radius: 20px;
+    outline: none;
+}
+
+#printable {
+    display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #383934;
+    }
+
+    #content {
+        background: #282923;
+        color: #f8f8f2;
+        border: 0;
+    }
+}
+
+@media print {
+    .container {
+        display: none;
+    }
+
+    #printable {
+        display: block;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+}</style>
 
 <script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4205451578583274" crossorigin="anonymous"></script>
 
@@ -31,6 +91,46 @@
 <textarea id="content"></textarea>
 </div>
 <pre id="printable"></pre>
-<script src="https://notepad.code.pro.vn/script.js"></script>
+<!--<script src="https://notepad.code.pro.vn/script.js"></script>-->
+        <script> function uploadContent() {
+	// If textarea value changes.
+	if (content !== textarea.value) {
+		var temp = textarea.value;
+		var request = new XMLHttpRequest();
+
+		request.open("POST", window.location.href, true);
+		request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+		request.onload = function () {
+			if (request.readyState === 4) {
+				// Request has ended, check again after 1 second.
+				content = temp;
+				setTimeout(uploadContent, 1000);
+			}
+		};
+		request.onerror = function () {
+			// Try again after 1 second.
+			setTimeout(uploadContent, 1000);
+		};
+		request.send("text=" + encodeURIComponent(temp));
+
+		// Make the content available to print.
+		printable.removeChild(printable.firstChild);
+		printable.appendChild(document.createTextNode(temp));
+	} else {
+		// Content has not changed, check again after 1 second.
+		setTimeout(uploadContent, 1000);
+	}
+}
+
+var textarea = document.getElementById("content");
+var printable = document.getElementById("printable");
+var content = textarea.value;
+
+// Make the content available to print.
+printable.appendChild(document.createTextNode(content));
+
+textarea.focus();
+uploadContent();
+        </script>
 </body>
 </html>
